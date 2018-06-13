@@ -108,7 +108,9 @@ window.onload = function(){
   };
 
 region.onchange = city.onchange = category.onchange = function(e){
-	 tickets.innerHTML = '';
+	 if(tickets.getElementsByTagName('table').length){		 
+		 tickets.innerHTML = '';		 
+	 }
 	 
 	 var indexOption = this.selectedIndex;
 	 var text = this.options[indexOption].text;	 
@@ -132,18 +134,20 @@ region.onchange = city.onchange = category.onchange = function(e){
 	 var regionSelected = getRegion();
 	 var citySelected = getCity();
 	 var categorySelected = getCategory();
-	 //alert(regionSelected + ": " + citySelected + ": "+ categorySelected)
-	 //var table = document.querySelector('#tickets table');
-	 var firstChecking = [false,false,false];
-	 var countFalse = 0;
-	 var secondChecking = [false,false,false];
+	
+	
+	// var firstChecking = [false,false,false];
+	// var countFalse = 0;
+	 //var secondChecking = [false,false,false];
 	 
-	 function blackBox(){
+	 function blackBox(first, second){
+		 //alert(first + ":::" + second);
 		 
-		 for(var i = 0; i < firstChecking.length; i++ ){
-			// if(firstChecking[i] == false) countFalse += 1;
-			 if(firstChecking[i] == true && secondChecking[i] == false) return 'next iteration';
-			 return 1;
+		 for(var i = 0; i < first.length; i++ ){
+			//if(firstChecking[i] == false) countFalse += 1;
+			// alert(first[i] + ':::'+ second[i]);
+			 if(first[i] == true && second[i] == false) return 'next iteration';
+			 
 		 }
 		 
 	 }
@@ -160,10 +164,12 @@ region.onchange = city.onchange = category.onchange = function(e){
 	 var cit = false;
 	 var cat = false;
 	 for(key in events){
-		
+		 
+		 var firstChecking = [false,false,false];
+		 var secondChecking = [false,false,false];
 		 if(regionSelected != 'Все области') {
 			firstChecking[0] = true;			
-			if(events[key]['region'] == regionSelected) secondChecking[0] = true;
+			if(events[key]['region'] == regionSelected) secondChecking[0] = true
 		 }
 		 if(citySelected != 'Все города'){
 			 firstChecking[1] = true;
@@ -171,13 +177,14 @@ region.onchange = city.onchange = category.onchange = function(e){
 		 } 
 		 if(categorySelected != 'Все категории'){
 			 firstChecking[2] = true;
-			 if(events[key]['category'] == categorySelected) {secondChecking[2] = true;}		 
+			 if(events[key]['category'] == categorySelected) secondChecking[2] = true;  		 
 		 }
+		//alert(firstChecking + ':::'+ secondChecking)
+		 
 		
 		 
-		alert(firstChecking + '::::' + secondChecking );
+		 if(blackBox(firstChecking, secondChecking) == 'next iteration') continue;
 		 
-		 if(blackBox() === 'next iteration') continue;
 		 
 		 /*if(countFalse == firstChecking.lenght) {
 			 tickets.innerHTML = '';
@@ -205,13 +212,17 @@ region.onchange = city.onchange = category.onchange = function(e){
 		 var exampleClone = document.querySelector('.example').cloneNode(true);
 		 
 		 exampleClone.rows[0].cells[1].innerHTML = key;
-		 exampleClone.rows[1].cells[1].innerHTML = key['region'];
-		 exampleClone.rows[2].cells[1].innerHTML = key['city'];
-		 exampleClone.rows[3].cells[1].innerHTML = key['category']; 
+		 exampleClone.rows[1].cells[1].innerHTML = events[key]['region'];
+		 exampleClone.rows[2].cells[1].innerHTML = events[key]['city'];
+		 exampleClone.rows[3].cells[1].innerHTML = events[key]['category'];
+
+		 tickets.appendChild(exampleClone);
+		 
+		 
 		 };
 		
 
-		//tickets.appendChild(exampleClone);
+		
 		 
 	 }
 	 
